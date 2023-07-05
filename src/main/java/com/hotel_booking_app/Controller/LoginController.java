@@ -10,7 +10,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class LoginController {
-    @PostMapping(path = "/login")
+
+    @GetMapping(path = "/")
+    public String index(){
+        return "index";
+    }
+
+    //这个login表示动作，不应该返回login页面，应该返回成功或失败
+    @GetMapping(path = "/login")
     public String login(){
         return "login";
     }

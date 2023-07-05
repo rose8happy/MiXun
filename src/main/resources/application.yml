@@ -10,3 +10,8 @@ spring:
     suffix: .html
     encoding: UTF-8
     mode: HTML
+  mvc:
+    static-path-pattern: /**
+  web:
+    resources:
+      static-locations: classpath:/templates/
