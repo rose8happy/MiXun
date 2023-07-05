@@ -5,8 +5,10 @@ import com.hotel_booking_app.Handler.SecurityAuthenticationSuccessHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
@@ -24,7 +26,7 @@ public class SecurityConfiguration {
             try {
                 authorize
                         // 放行登录接口 放行get，但是不放行post
-                        .requestMatchers("login","logout","/").permitAll()
+                        .requestMatchers("login","/").permitAll()
                         // 放行资源目录 有点奇怪
                         .requestMatchers("/templates/**","/login.html").permitAll()
                         // 其余的都需要权限校验
@@ -37,7 +39,6 @@ public class SecurityConfiguration {
             .formLogin(Customizer.withDefaults()
             )
             .csrf(AbstractHttpConfigurer::disable)
-
         ;
         try {
             return http.build();
@@ -46,8 +47,14 @@ public class SecurityConfiguration {
         }
     }
 
-    @Bean
-    public WebSecurityCustomizer webSecurityCustomizer(){
-        return web -> web.ignoring().dispatcherTypeMatchers();
-    }
+//    @Bean
+//    public WebSecurityCustomizer webSecurityCustomizer() {
+//        return new WebSecurityCustomizer() {
+//            @Override
+//            public void customize(WebSecurity web) {
+//                //意义不明的一段代码
+//                web.ignoring().dispatcherTypeMatchers(HttpMethod.valueOf("/"));
+//            }
+//        };
+//    }
 }
