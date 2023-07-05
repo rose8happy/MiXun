@@ -5,22 +5,19 @@
   <title>用户登录</title>
 </head>
 <body>
-<form th:action="@{/user/success}" method="post">
-  <table>
-    <tr>
-      <td>
-        <input type="text" name="phoneNumber">
-      </td>
-    </tr>
-    <tr>
-      <td th:text="#{password}"></td>
-      <td><input type="password" name="password"></td>
-    </tr>
-    <tr>
-      <td><input type="submit" value="登录"></td>
-      <td><input type="reset" value="重填"></td>
-    </tr>
-  </table>
-</form>
+  <h1>Please Log In</h1>
+  <div th:if="${param.error}">
+    Invalid username and password.</div>
+  <div th:if="${param.logout}">
+    You have been logged out.</div>
+  <form th:action="@{/logout}" method="get">
+    <div>
+      <input type="text" name="username" placeholder="Username"/>
+    </div>
+    <div>
+      <input type="password" name="password" placeholder="Password"/>
+    </div>
+    <input type="submit" value="Log in" />
+  </form>
 </body>
 </html>
