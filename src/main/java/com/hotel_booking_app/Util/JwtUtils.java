@@ -4,22 +4,24 @@ import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.Data;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
+@Data
 @Component
 public class JwtUtils {
 
-    @Value("secretkey")
-    private String SECRET_KEY;
+    //@Value("jwt.secret")
+    private String SECRET_KEY = "lXAEQ/sT5ksVlu+vTbAr/kEGZIc3VcFgeX7JSN8HF3gCKZyDSzMdZaQGRmmZkE1fl8eEX";
 
     // 定义一个令牌有效期，单位为毫秒
     private static final long EXPIRATION_TIME = 1000 * 60 * 60 * 24;
 
     // 生成令牌的方法，接收一个用户名作为参数
     public  String generateToken(String username) {
+        //System.out.println("sss: "+SECRET_KEY);
         // 使用JwtBuilder创建一个令牌
         JwtBuilder builder = Jwts.builder()
                 .setSubject(username) // 设置主题
