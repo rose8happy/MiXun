@@ -29,9 +29,9 @@ public class SecurityAuthenticationSuccessHandler implements AuthenticationSucce
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                         Authentication authentication) throws IOException, ServletException {
         String username = ((UserDetails)authentication.getPrincipal()).getUsername();
-        System.out.println(username);
+        //System.out.println(username);
         String token = jwtUtils.generateToken(username);//这一步产生了奇怪的错误
-        System.out.println(token);
+        //System.out.println(token);
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setContentType("application/json;charset=utf-8");
         Map<String,Object> result=new HashMap<>();
