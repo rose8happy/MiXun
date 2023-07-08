@@ -3,6 +3,7 @@ package com.hotel_booking_app.Service;
 import com.hotel_booking_app.Pojo.User;
 import com.hotel_booking_app.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -26,15 +27,16 @@ public class MovieUserDetailsService implements UserDetailsService {
         if (user == null) {
             throw new UsernameNotFoundException("用户不存在");
         }
+        //System.out.println(user.getPassword());
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         // 返回一个UserDetails对象，包含用户名、密码和权限
         return new org.springframework.security.core.userdetails.User(
                 user.getUsername(),
-                "{bcrypt}"+encoder.encode(user.getPassword()),
-                //user.getPassword(),
-                user.getAuthorities()
+                //"{bcrypt}"+encoder.encode(user.getPassword()),
+                user.getPassword(),
+                //user.getAuthorities()
                 //正常情况下不是all，这里是因为作者没用到权限
-                //AuthorityUtils.commaSeparatedStringToAuthorityList("user")
+                AuthorityUtils.commaSeparatedStringToAuthorityList("user")
         );
     }
 
@@ -44,5 +46,6 @@ public class MovieUserDetailsService implements UserDetailsService {
 /*
 不使用这个userservice好像也能自动查询？？？
 使用了之后验权会失败
-应该是要在SecurityConfig里面加配置
+要在SecurityConfig里面加配置
+不配置也能用虽然不知道为什么，security好像是会自动查询数据库？那mybatis也白写了？
 * */

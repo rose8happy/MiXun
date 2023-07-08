@@ -1,7 +1,10 @@
 package com.hotel_booking_app.Config;
 
+import com.hotel_booking_app.Filter.JwtAuthenticationFilter;
 import com.hotel_booking_app.Handler.SecurityAuthenticationFailureHandler;
 import com.hotel_booking_app.Handler.SecurityAuthenticationSuccessHandler;
+import com.hotel_booking_app.Service.MovieUserDetailsService;
+import jakarta.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,10 +14,14 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import javax.sql.DataSource;
 
@@ -22,21 +29,28 @@ import javax.sql.DataSource;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration {
-    @Autowired
-    private SecurityAuthenticationSuccessHandler securityAuthenticationSuccessHandler;
 
     @Autowired
-    private SecurityAuthenticationFailureHandler securityAuthenticationFailureHandler;
+    MovieUserDetailsService movieUserDetailsService;
+
+    @Autowired
+    private MovieAuthenticationEntryPoint movieAuthenticationEntryPoint;
+
+    @Resource
+    JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+
         http.authorizeHttpRequests(authorize-> {
             try {
                 authorize
                         // 放行登录接口 放行get，但是不放行post
                         .requestMatchers("login","/").permitAll()
+
                         // 放行资源目录 有点奇怪
                         .requestMatchers("/templates/**","/login.html").permitAll()
+
                         // 其余的都需要权限校验
                         .anyRequest().authenticated();
 
@@ -44,9 +58,22 @@ public class SecurityConfiguration {
                 throw new RuntimeException(e);
             }
         })
-            .formLogin(form->form.successHandler(new SecurityAuthenticationSuccessHandler())
+            .formLogin(form->form
+                    .successHandler(new SecurityAuthenticationSuccessHandler())
+                    .failureHandler(new SecurityAuthenticationFailureHandler())
+
             )
+                //这行代码好像没有起作用？？？
             .csrf(AbstractHttpConfigurer::disable)
+            .userDetailsService(movieUserDetailsService)
+                // 更新密码...意义不明
+                .passwordManagement((management) -> management
+                        .changePasswordPage("/update-password")
+                )
+                .exceptionHandling(httpSecurityExceptionHandlingConfigurer -> httpSecurityExceptionHandlingConfigurer
+                        .authenticationEntryPoint(movieAuthenticationEntryPoint)
+                )
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
         ;
         //禁用Session
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
@@ -79,5 +106,9 @@ public class SecurityConfiguration {
         //users.createUser(admin);
         return users;
     }
-
+    //会让我密码验证不通过的诡异代码
+//    @Bean(name = "passwordEncoder")
+//    public PasswordEncoder passwordEncoder(){
+//        return new BCryptPasswordEncoder();
+//    }
 }
