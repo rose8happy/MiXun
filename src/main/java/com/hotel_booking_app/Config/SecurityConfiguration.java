@@ -14,10 +14,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
@@ -46,9 +43,9 @@ public class SecurityConfiguration {
             try {
                 authorize
                         // 放行登录接口 放行get，但是不放行post
-                        .requestMatchers("login","/").permitAll()
+                        .requestMatchers("login","/","/register").permitAll()
 
-                        // 放行资源目录 有点奇怪
+                        // 放行资源目录 有点奇怪 奇怪点在于好像没有放行成功
                         .requestMatchers("/templates/**","/login.html").permitAll()
 
                         // 其余的都需要权限校验
@@ -61,9 +58,12 @@ public class SecurityConfiguration {
             .formLogin(form->form
                     .successHandler(new SecurityAuthenticationSuccessHandler())
                     .failureHandler(new SecurityAuthenticationFailureHandler())
-
+                    //设置默认的的登录路径，即使指定了路径，实际上也只是制定了名字呢，实际的验证操作依然由Spring Security自行完成
+                    .loginProcessingUrl("/doLogin")
+                    //登录成功之后跳转的路径
+                    //.successForwardUrl("/index")
             )
-                //这行代码好像没有起作用？？？
+                //这行代码好像没有起作用？？？既然没有起到应有的作用那么还是删了好
             .csrf(AbstractHttpConfigurer::disable)
             .userDetailsService(movieUserDetailsService)
                 // 更新密码...意义不明

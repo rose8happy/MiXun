@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.hotel_booking_app.mapper.UserMapper">
+    <!--useGeneratedKeys="true" keyProperty="id"-->
     <insert id="insertUser" parameterType="User" useGeneratedKeys="true" keyProperty="id">
-        insert into users (username,password) values (#{userName},#{password})
+        insert into users (username,password,enabled) values (#{userName},#{password},1)
     </insert>
 
     <select id="getByUserName" parameterType="String" resultType="User">

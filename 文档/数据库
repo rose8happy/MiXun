@@ -15,3 +15,4 @@ create unique index ix_auth_username on authorities (username,authority);
 
 DROP TABLE IF EXISTS authorities;
 DROP TABLE IF EXISTS users;
+

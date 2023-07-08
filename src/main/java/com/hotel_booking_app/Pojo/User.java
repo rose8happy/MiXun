@@ -9,6 +9,7 @@ import java.util.List;
 
 @Data
 public class User implements UserDetails {
+    private long id;
 
     private String userName;
     private String password;
@@ -54,5 +55,10 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return enabled;
+    }
+
+    public User(String userName, String password){
+        this.userName = userName;
+        this.password = password;
     }
 }
