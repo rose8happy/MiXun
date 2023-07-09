@@ -3,12 +3,37 @@
 <mapper namespace="com.hotel_booking_app.mapper.CVMapper">
     <select id="showAllCV" resultType="CV">
         select *
-        from curriculum_vitae;
+        from curriculum_vitae
     </select>
 
     <select id="showCVByState" parameterType="String" resultType="CV">
         select *
         from curriculum_vitae
-        where CV_state = #{state};
+        where CV_state = #{state}
+    </select>
+
+    <select id="conditionalQueryCV" parameterType="CV_q" resultType="CV">
+        select *
+        from curriculum_vitae
+        <where>
+            <if test="job_intention != null">
+                and job_intention = #{job_intention}
+            </if>
+            <if test="name != null">
+                and name = #{name}
+            </if>
+            <if test="create_time_b != null">
+                and (create_time &gt;= #{create_time_b} &amp; create_time &lt;= #{create_time_a})
+            </if>
+            <if test="CV_source != null">
+                and CV_source = #{CV_source}
+            </if>
+            <if test="phone_num != null">
+                and phone_num = #{phone_num}
+            </if>
+            <if test="specialized_subject != null">
+                and specialized_subject = #{specialized_subject}
+            </if>
+        </where>
     </select>
 </mapper>
