@@ -1,0 +1,22 @@
+curriculum vitae 简称CV
+
+DROP TABLE IF EXISTS curriculum_vitae;
+create table curriculum_vitae(
+	CV_ID int not null primary key,
+	name varchar(100) not null,
+	phone_num varchar(100) not null,
+	gender varchar(50) not null,
+	job_intention varchar(200) not null,
+	specialized_subject varchar(200) not null,
+	qualifications varchar(100) not null,
+	service_years int not null,
+	creat_time date not null,
+	CV_source varchar(200) not null,
+	CV_state varchar(100) not null
+);
+
+插入数据
+insert into curriculum_vitae values(1,"HR","13411111111","or","HR","计算机哲学","本科",0,'2023-02-03',"密讯","已储备");
+insert into curriculum_vitae values(2,"韩暗暗","13722222222","男","JAVA工程师","计算机","本科",0,'2023-02-02',"密讯","已淘汰");
+查询全部
+select * from curriculum_vitae;

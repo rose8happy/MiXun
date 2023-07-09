@@ -16,3 +16,6 @@ create unique index ix_auth_username on authorities (username,authority);
 DROP TABLE IF EXISTS authorities;
 DROP TABLE IF EXISTS users;
 
+注意执行删除操作时要先删除authorities才能再删users
+delete from authorities where username = 'a' or username = 'b' or username = 'c';
+delete from users where username = 'a' or username = 'b' or username = 'c';

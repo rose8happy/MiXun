@@ -3,14 +3,20 @@ package com.hotel_booking_app.Controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hotel_booking_app.Pojo.User;
+import com.hotel_booking_app.Util.JwtUtils;
 import com.hotel_booking_app.mapper.UserMapper;
+import jakarta.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -40,6 +46,8 @@ public class LoginController {
 
     @Autowired
     private UserMapper userMapper;
+    @Autowired
+    private DataSource dataSource;
 
     @PostMapping(path = "/register")
     public String register(
@@ -54,18 +62,35 @@ public class LoginController {
         //return username+" "+password;
         User user = userMapper.getByUserName(username);
         Map<String,Object> result=new HashMap<>();
-        if(user != null){
+        JdbcUserDetailsManager users = new JdbcUserDetailsManager(dataSource);
+        if(users.userExists(username)){
             result.put("code", -1);
             result.put("msg", "existed the username");
             return new ObjectMapper().writeValueAsString(result);
         } else {
-            User user1 = new User(username, password);
-            //emm设置权限的语法好像有点麻烦，先不设置了
-            int id = userMapper.insertUser(user1);
-            System.out.println(id);
+            BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+            //User user1 = new User(username, "{bcrypt}"+encoder.encode(password));
+            //int id = userMapper.insertUser(user1);
+            //userMapper.insertAuthoritie(username,"ROLE_USER");
+
+            UserDetails newUser = org.springframework.security.core.userdetails.User.builder()
+                    .username(username)
+                    .password("{bcrypt}"+encoder.encode(password))
+                    .roles("USER")
+                    .build();
+            users.createUser(newUser);
+
             result.put("code", 0);
             result.put("msg", "register successfully");
             return new ObjectMapper().writeValueAsString(result);
         }
+    }
+
+    @Resource
+    JwtUtils jwtUtils = new JwtUtils();
+    @GetMapping("/showUsername")
+    public String showUsername(String token){
+        String username = jwtUtils.parseToken(token);
+        return username;
     }
 }

@@ -63,7 +63,7 @@ public class SecurityConfiguration {
                     //登录成功之后跳转的路径
                     //.successForwardUrl("/index")
             )
-                //这行代码好像没有起作用？？？既然没有起到应有的作用那么还是删了好
+                //起到作用了呢，删除之后post
             .csrf(AbstractHttpConfigurer::disable)
             .userDetailsService(movieUserDetailsService)
                 // 更新密码...意义不明
@@ -102,8 +102,13 @@ public class SecurityConfiguration {
                 .roles("USER", "ADMIN")
                 .build();
         JdbcUserDetailsManager users = new JdbcUserDetailsManager(dataSource);
-        //users.createUser(user);
-        //users.createUser(admin);
+        if(!users.userExists("user")) {
+            users.createUser(user);
+        }
+        if(!users.userExists("admin")){
+            users.createUser(admin);
+        }
+
         return users;
     }
     //会让我密码验证不通过的诡异代码

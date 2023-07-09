@@ -9,4 +9,6 @@ public interface UserMapper {
     int insertUser(User user);
 
     User getByUserName(@Param("userName") String userName);
+
+    void insertAuthoritie(@Param("userName") String userName, @Param("authority") String authority);
 }
