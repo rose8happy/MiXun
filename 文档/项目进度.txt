@@ -30,8 +30,9 @@
         但是禁用似乎会对安全性造成影响
         有空的话可以换成config的方法来开放post接口
     2.更新密码接口，一种是自定义接口，另一种Spring Security好像有提供方法
-    3.关于token与username 的对应，虽然可以建数据库储存查找，但不知道有没有更巧妙的方法
+        使用自带的JdbcUserDetailsManager更新密码
     4.Mybatis好像白引进了，Spring Security已经提供了基础的查找方法的插入方法
+        简历表还是要Mybatis的
     5.验证token的时候可以验证一下是否过期，过期需要重新登录
 
     6.比较大的两个工程，引入redis与引入微服务
@@ -53,3 +54,22 @@
         原因可能是Spring Boot或者Mybatis对于大小写的转换和对于下划线和驼峰的转换？
         正确的 Mybatis配置里面有一个map-underscore-to-camel-case驼峰命名规则的配置
         关掉之后返回就正常了
+
+    13. queryCV CV_q json格式字符串数据如下
+    {
+        "name": null,
+        "phone_num": null,
+        "gender": "or",
+        "job_intention": null,
+        "specialized_subject": null,
+        "qualifications": "本科",
+        "service_years": 0,
+        "creat_time_b": null,
+        "creat_time_a": "2023-02-03",
+        "cv_ID": 1,
+        "cv_state": "已储备",
+        "cv_source": null
+    }
+
+    14.代码行数统计git命令
+    git log --format='%aN' | sort -u | while read name; do echo -en "$name\t"; git log --author="$name" --pretty=tformat: --numstat | grep "\(.html\|.java\|.xml\|.properties\|.css\|.js\|.txt\)$" | awk '{ add += $1; subs += $2; loc += $1 - $2 } END { printf "added lines: %s, removed lines: %s, total lines: %s\n", add, subs, loc }' -; done

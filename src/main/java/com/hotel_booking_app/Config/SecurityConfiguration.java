@@ -4,6 +4,7 @@ import com.hotel_booking_app.Filter.JwtAuthenticationFilter;
 import com.hotel_booking_app.Handler.SecurityAuthenticationFailureHandler;
 import com.hotel_booking_app.Handler.SecurityAuthenticationSuccessHandler;
 import com.hotel_booking_app.Service.MovieUserDetailsService;
+import com.sun.net.httpserver.Authenticator;
 import jakarta.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -63,7 +64,7 @@ public class SecurityConfiguration {
                     //登录成功之后跳转的路径
                     //.successForwardUrl("/index")
             )
-                //起到作用了呢，删除之后post
+                //起到作用了呢，删除之后post接口(包括security自带的登录接口)不能访问
             .csrf(AbstractHttpConfigurer::disable)
             .userDetailsService(movieUserDetailsService)
                 // 更新密码...意义不明
@@ -116,4 +117,5 @@ public class SecurityConfiguration {
 //    public PasswordEncoder passwordEncoder(){
 //        return new BCryptPasswordEncoder();
 //    }
+
 }

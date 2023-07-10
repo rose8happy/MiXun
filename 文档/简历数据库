@@ -10,7 +10,7 @@ create table curriculum_vitae(
 	specialized_subject varchar(200) not null,
 	qualifications varchar(100) not null,
 	service_years int not null,
-	creat_time date not null,
+	create_time date not null,
 	CV_source varchar(200) not null,
 	CV_state varchar(100) not null
 );

@@ -1,38 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.hotel_booking_app.mapper.CVMapper">
-    <select id="showAllCV" resultType="CV">
-        select *
-        from curriculum_vitae
-    </select>
-
-    <select id="showCVByState" parameterType="String" resultType="CV">
-        select *
-        from curriculum_vitae
-        where CV_state = #{state}
-    </select>
-
     <select id="conditionalQueryCV" parameterType="CV_q" resultType="CV">
         select *
         from curriculum_vitae
         <where>
-            <if test="job_intention != null">
-                and job_intention = #{job_intention}
+            <if test="CV_q.job_intention != null">
+                and job_intention = #{CV_q.job_intention}
             </if>
-            <if test="name != null">
-                and name = #{name}
+            <if test="CV_q.name != null">
+                and name = #{CV_q.name}
             </if>
-            <if test="create_time_b != null">
-                and (create_time &gt;= #{create_time_b} &amp; create_time &lt;= #{create_time_a})
+            <if test="CV_q.create_time_b != null">
+                and (create_time &gt;= #{CV_q.create_time_b} &amp; create_time &lt;= #{CV_q.create_time_a})
             </if>
-            <if test="CV_source != null">
-                and CV_source = #{CV_source}
+            <if test="CV_q.CV_source != null">
+                and CV_source = #{CV_q.CV_source}
             </if>
-            <if test="phone_num != null">
-                and phone_num = #{phone_num}
+            <if test="CV_q.phone_num != null">
+                and phone_num = #{CV_q.phone_num}
             </if>
-            <if test="specialized_subject != null">
-                and specialized_subject = #{specialized_subject}
+            <if test="CV_q.specialized_subject != null">
+                and specialized_subject = #{CV_q.specialized_subject}
+            </if>
+            <if test="CV_q.CV_state != null">
+                and CV_state = #{CV_q.CV_state}
             </if>
         </where>
     </select>

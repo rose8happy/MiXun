@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 @RestController
 public class LoginController {
@@ -48,6 +49,8 @@ public class LoginController {
     private UserMapper userMapper;
     @Autowired
     private DataSource dataSource;
+
+    BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
     @PostMapping(path = "/register")
     public String register(
@@ -92,5 +95,30 @@ public class LoginController {
     public String showUsername(String token){
         String username = jwtUtils.parseToken(token);
         return username;
+    }
+
+    @PostMapping("/updatePassword")
+    public String updatePassword(String old_pwd,String new_pwd){
+        JdbcUserDetailsManager users = new JdbcUserDetailsManager(dataSource);
+        users.changePassword("{bcrypt}"+encoder.encode(old_pwd),
+                "{bcrypt}"+encoder.encode(new_pwd));
+
+        return "0";
+    }
+
+    @PostMapping("/deleteUser")
+    public String deleteUser(String username, String password){
+        /**
+         * 验证账号密码，正确则注销
+         */
+        User user = userMapper.getByUserName(username);
+        if(Objects.equals(user.getPassword(), "{bcrypt}" + encoder.encode(password))){
+            JdbcUserDetailsManager users = new JdbcUserDetailsManager(dataSource);
+            users.deleteUser(username);
+            return "0";
+        } else {
+            return "-1";
+        }
+
     }
 }

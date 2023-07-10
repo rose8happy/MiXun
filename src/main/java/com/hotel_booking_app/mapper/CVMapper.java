@@ -8,9 +8,5 @@ import org.springframework.stereotype.Repository;
 import java.util.ArrayList;
 @Repository
 public interface CVMapper {
-    ArrayList<CV> showAllCV();
-
-    ArrayList<CV> showCVByState(@Param("state") String state);
-
-    ArrayList<CV> conditionalQueryCV(@Param("CV") CV_q cv);
+    ArrayList<CV> conditionalQueryCV(@Param("CV_q") CV_q cv);
 }

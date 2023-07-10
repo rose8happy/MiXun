@@ -2,6 +2,7 @@ package com.hotel_booking_app.Service;
 
 import com.hotel_booking_app.Pojo.User;
 import com.hotel_booking_app.mapper.UserMapper;
+import com.sun.net.httpserver.Authenticator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -9,6 +10,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import javax.naming.spi.DirStateFactory;
+import javax.xml.transform.Result;
 
 /*
 验证用户名和密码对不对
@@ -39,7 +43,7 @@ public class MovieUserDetailsService implements UserDetailsService {
                 AuthorityUtils.commaSeparatedStringToAuthorityList("user")
         );
     }
-
+    /*这个service里好像可以重写登录接口*/
 }
 
 
