@@ -82,6 +82,7 @@ public class JwtUtils {
     public  boolean validateToken(String token) {
         try {
             // 使用JwtParser解析和验证令牌，如果成功则返回true，如果失败则抛出异常
+            // 过期会自动引发异常呢
             Jwts.parser()
                     .setSigningKey(SECRET_KEY)
                     .parseClaimsJws(token);
