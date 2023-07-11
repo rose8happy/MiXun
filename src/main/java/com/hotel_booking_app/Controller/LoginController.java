@@ -7,7 +7,6 @@ import com.hotel_booking_app.Util.JwtUtils;
 import com.hotel_booking_app.mapper.UserMapper;
 import jakarta.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
@@ -18,7 +17,6 @@ import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 @RestController
 public class LoginController {
