@@ -7,19 +7,18 @@ import com.hotel_booking_app.Util.JwtUtils;
 import com.hotel_booking_app.mapper.UserMapper;
 import jakarta.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 @RestController
 public class LoginController {
@@ -98,15 +97,22 @@ public class LoginController {
     }
 
     @PostMapping("/updatePassword")
-    public String updatePassword(String old_pwd,String new_pwd){
+    public String updatePassword(String username,String old_pwd,String new_pwd){
         JdbcUserDetailsManager users = new JdbcUserDetailsManager(dataSource);
-        users.changePassword("{bcrypt}"+encoder.encode(old_pwd),
-                "{bcrypt}"+encoder.encode(new_pwd));
-
-        return "0";
+        //System.out.println(SecurityContextHolder.getContextHolderStrategy().getContext().getAuthentication().toString());
+        // 密码错误失败要返回-1 然后的话没有账号是怎么区分账号的呢……？
+        // jwt的filter里面设置了账号，故可以识别账号
+        User user = userMapper.getByUserName(username);
+        if(Objects.equals(user.getPassword(), "{bcrypt}" + encoder.encode(old_pwd))){
+            users.changePassword("{bcrypt}"+encoder.encode(old_pwd),
+                    "{bcrypt}"+encoder.encode(new_pwd));
+            return "0";
+        } else {
+            return "-1";
+        }
     }
 
-    @PostMapping("/deleteUser")
+    @DeleteMapping("/deleteUser")
     public String deleteUser(String username, String password){
         /**
          * 验证账号密码，正确则注销

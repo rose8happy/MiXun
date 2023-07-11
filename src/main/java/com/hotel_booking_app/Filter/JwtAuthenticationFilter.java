@@ -28,6 +28,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         boolean valid = jwtUtils.validateToken(token);
         if(valid){
             String username = jwtUtils.parseToken(token);
+            //注意这里权限要自己查数据库放进去
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username, null, null);
 
             // 将authentication对象设置到SecurityContextHolder中，表示用户已经通过认证，
