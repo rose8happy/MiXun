@@ -67,7 +67,12 @@ public class LoginController {
             result.put("code", -1);
             result.put("msg", "existed the username");
             return new ObjectMapper().writeValueAsString(result);
-        } else {
+        } else if(username == null){
+            result.put("code", -2);
+            result.put("msg", "username is null!");
+            return new ObjectMapper().writeValueAsString(result);
+        }
+        else {
             BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
             //User user1 = new User(username, "{bcrypt}"+encoder.encode(password));
             //int id = userMapper.insertUser(user1);
